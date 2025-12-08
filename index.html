@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Engine - Investor Deck</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ESTILOS BASE */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #e4e4e7;
+            overflow-x: hidden;
+        }
+        
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Scrollbar */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ANIMACIONES */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInBottom { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .animate-slide-up { animation: slideInBottom 0.7s ease-out forwards; }
+        .animate-zoom-in { animation: zoomIn 0.3s ease-out forwards; }
+        
+        /* Retrasos */
+        .delay-0 { animation-delay: 0ms; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+
+        /* Tarjetas Bento */
+        .bento-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            border-color: #52525b;
+            background-color: rgba(24, 24, 27, 0.8);
+            transform: translateY(-2px);
+        }
+        .bento-card:hover .arrow-icon {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .bento-card:hover .icon-box {
+            color: white;
+            background-color: #27272a;
+        }
+        .bento-card:hover .card-title { color: white; }
+
+        /* Highlight Clon */
+        .card-highlight {
+            border-color: #3f3f46;
+        }
+        .card-highlight:hover {
+            border-color: #fff;
+            box-shadow: 0 0 40px -10px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Dashboard Card Special Style */
+        .card-dashboard {
+            background: linear-gradient(145deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);
+        }
+        .card-dashboard:hover {
+            border-color: #10b981; /* Emerald border on hover */
+        }
+
+        /* Propuesta Cristina Card */
+        .card-proposal {
+            background-color: #18181b; /* Zinc 900 */
+            border-color: #27272a;
+        }
+        .card-proposal:hover {
+            border-color: #a1a1aa;
+        }
+
+        /* Modal */
+        #modal-overlay { transition: opacity 0.3s ease; }
+        #modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .modal-hidden { pointer-events: none; opacity: 0; }
+        .modal-hidden #modal-content { transform: scale(0.95); }
+        .modal-visible { pointer-events: auto; opacity: 1; }
+        .modal-visible #modal-content { transform: scale(1); }
+
+        .step-dot { box-shadow: 0 0 0 4px #000; }
+        
+        /* Tabla Personalizada */
+        .custom-table th, .custom-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #27272a;
+        }
+        .custom-table th {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #a1a1aa;
+        }
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-white selection:text-black min-h-screen relative">
+
+    <!-- Fondo -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-white/[0.03] blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-white/[0.02] blur-[120px] rounded-full"></div>
+    </div>
+
+    <!-- Contenedor -->
+    <div class="relative max-w-7xl mx-auto px-6 py-12 md:py-24 z-10">
+        
+        <!-- Header -->
+        <header class="mb-20 animate-slide-up">
+            <div class="flex items-center gap-3 mb-6 opacity-60">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="text-xs font-mono tracking-[0.2em] uppercase">Confidential Investor Deck</span>
+            </div>
+            <h1 class="text-5xl md:text-8xl font-medium tracking-tighter text-white mb-6">
+                AI Content <br class="hidden md:block" />
+                <span class="text-zinc-500">Engine.</span>
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-2xl font-light leading-relaxed">
+                Modelo de negocio para la agencia del futuro. 
+                Escalable. Automatizada. High-Ticket.
+            </p>
+        </header>
+
+        <!-- GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
+            <!-- 1. NOTICIA -->
+            <button onclick="openModal('CONTEXT')" class="lg:col-span-2 bento-card group relative flex flex-col items-start justify-between h-64 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-left delay-0 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none"></div>
+                <div class="relative z-10 flex justify-between w-full items-start">
+                    <div class="p-3 rounded-lg bg-zinc-900/50 text-zinc-400 icon-box transition-colors">
+                        <i data-lucide="newspaper" class="w-6 h-6"></i>
+                    </div>
+                    <span class="bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest">Noticia Global</span>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <h3 class="text-2xl md:text-3xl font-medium text-zinc-300 card-title transition-colors tracking-tight">The 90% Reality</h3>
+                    <p class="mt-2 text-sm text-zinc-500 card-subtitle transition-colors font-medium tracking-wide">El cambio de paradigma es irreversible.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 2. SOLUCIÓN -->
+            <button onclick="openModal('SOLUTION')" class="lg:col-span-1 bento-card group relative flex flex-col items-start justify-between h-64 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-left delay-100 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="relative z-10 p-3 rounded-lg bg-zinc-900/50 text-zinc-400 icon-box transition-colors">
+                    <i data-lucide="zap" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <h3 class="text-2xl font-medium text-zinc-300 card-title transition-colors tracking-tight">Zero Friction</h3>
+                    <p class="mt-2 text-sm text-zinc-600 card-subtitle transition-colors font-medium tracking-wide uppercase">Problema & Solución</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- SEPARADOR -->
+            <div class="lg:col-span-3 mt-8 mb-2 flex items-center gap-4 delay-200 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="h-px bg-zinc-900 flex-1"></div>
+                <span class="text-xs font-mono uppercase text-zinc-600 tracking-widest">Estructura de Ofertas</span>
+                <div class="h-px bg-zinc-900 flex-1"></div>
+            </div>
+
+            <!-- 3. UGC -->
+            <button onclick="openModal('OFFER_A')" class="lg:col-span-1 bento-card group relative flex flex-col items-start justify-between h-80 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-left delay-300 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="relative z-10 p-3 rounded-lg bg-zinc-900/50 text-zinc-400 icon-box transition-colors">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <span class="text-xs font-mono text-zinc-500 mb-2 block">OPCIÓN A</span>
+                    <h3 class="text-2xl font-medium text-zinc-300 card-title transition-colors tracking-tight">Influencers UGC</h3>
+                    <p class="mt-2 text-sm text-zinc-600 card-subtitle transition-colors font-medium">Contenido masivo sin tu cara.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 4. CLON (CORE) -->
+            <button onclick="openModal('OFFER_B')" class="lg:col-span-1 bento-card card-highlight group relative flex flex-col items-start justify-between h-80 p-8 w-full bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden text-left delay-400 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none"></div>
+                <div class="absolute top-4 right-4 bg-white text-black text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                    Core Offer
+                </div>
+                <div class="relative z-10 p-3 rounded-lg bg-zinc-900/50 text-white icon-box transition-colors border border-zinc-700">
+                    <i data-lucide="fingerprint" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <span class="text-xs font-mono text-zinc-400 mb-2 block">OPCIÓN B</span>
+                    <h3 class="text-2xl md:text-3xl font-medium text-white card-title transition-colors tracking-tight">Clon Digital</h3>
+                    <p class="mt-2 text-sm text-zinc-400 card-subtitle transition-colors font-medium">Marca Personal Automatizada.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 5. CURSOS -->
+            <button onclick="openModal('OFFER_C')" class="lg:col-span-1 bento-card group relative flex flex-col items-start justify-between h-80 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-left delay-500 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="relative z-10 p-3 rounded-lg bg-zinc-900/50 text-zinc-400 icon-box transition-colors">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <span class="text-xs font-mono text-zinc-500 mb-2 block">OPCIÓN C</span>
+                    <h3 class="text-2xl font-medium text-zinc-300 card-title transition-colors tracking-tight">Cursos Digitales</h3>
+                    <p class="mt-2 text-sm text-zinc-600 card-subtitle transition-colors font-medium">Activos de conocimiento.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 6. PRUEBAS (Col 1) -->
+            <button onclick="openModal('SAMPLES')" class="lg:col-span-1 bento-card group relative flex flex-col items-start justify-between h-64 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-left delay-500 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="relative z-10 p-3 rounded-lg bg-zinc-900/50 text-zinc-400 icon-box transition-colors">
+                    <i data-lucide="play-circle" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <h3 class="text-2xl font-medium text-zinc-300 card-title transition-colors tracking-tight">Pruebas / Demos</h3>
+                    <p class="mt-2 text-sm text-zinc-600 card-subtitle transition-colors font-medium">Ver ejemplos reales.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 7. ROADMAP (Cliente) -->
+            <button onclick="openModal('ROADMAP')" class="lg:col-span-2 bento-card group relative flex flex-col items-start justify-between h-64 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-left delay-500 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="relative z-10 p-3 rounded-lg bg-zinc-900/50 text-zinc-400 icon-box transition-colors">
+                    <i data-lucide="map" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <h3 class="text-2xl font-medium text-zinc-300 card-title transition-colors tracking-tight">Tu Roadmap</h3>
+                    <p class="mt-2 text-sm text-zinc-600 card-subtitle transition-colors font-medium">Plan de 90 Días para el Cliente.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 8. DASHBOARD (Nuevo) -->
+            <button onclick="openModal('DASHBOARD')" class="lg:col-span-1 bento-card card-dashboard group relative flex flex-col items-start justify-between h-64 p-8 w-full border border-zinc-800 rounded-xl overflow-hidden text-left delay-500 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="relative z-10 p-3 rounded-lg bg-emerald-900/30 text-emerald-400 icon-box transition-colors">
+                    <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <h3 class="text-2xl font-medium text-white card-title transition-colors tracking-tight">Dashboard</h3>
+                    <p class="mt-2 text-sm text-emerald-500/80 card-subtitle transition-colors font-medium">Rendimiento en tiempo real.</p>
+                </div>
+                <div class="arrow-icon absolute bottom-8 right-8 opacity-0 transform translate-x-4 transition-all duration-500 text-white">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <!-- 9. COMUNIDAD (Col 2) -->
+            <button onclick="openModal('COMMUNITY')" class="lg:col-span-2 bento-card group relative flex flex-col items-center justify-center h-64 p-8 w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden text-center delay-500 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-800/30 via-zinc-950/0 to-zinc-950/0 pointer-events-none"></div>
+                <div class="relative z-10 p-3 rounded-full bg-zinc-900/50 text-zinc-400 mb-4 icon-box transition-colors">
+                    <i data-lucide="heart" class="w-6 h-6"></i>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-medium text-zinc-300 card-title transition-colors tracking-tight">Comunidad > Contenido</h3>
+                    <p class="mt-2 text-sm text-zinc-600 card-subtitle transition-colors font-medium">El activo final donde reside el valor real.</p>
+                </div>
+            </button>
+
+            <!-- 10. PROPUESTA CRISTINA (Full Width) -->
+            <button onclick="openModal('PROPOSAL')" class="lg:col-span-3 bento-card card-proposal group relative flex flex-col items-start justify-between h-48 p-8 w-full rounded-xl overflow-hidden text-left delay-500 animate-slide-up opacity-0" style="animation-fill-mode: forwards;">
+                <div class="absolute inset-0 bg-gradient-to-r from-zinc-800/20 to-transparent pointer-events-none"></div>
+                <div class="relative z-10 w-full flex justify-between items-end">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="file-text" class="w-5 h-5 text-emerald-400"></i>
+                            <span class="text-xs font-mono uppercase tracking-widest text-emerald-400">Exclusivo</span>
+                        </div>
+                        <h3 class="text-3xl font-medium text-white card-title transition-colors tracking-tight">Propuesta Cristina</h3>
+                        <p class="mt-2 text-sm text-zinc-400 card-subtitle transition-colors font-medium">Ver desglose detallado de Packs y Costes.</p>
+                    </div>
+                    <div class="bg-zinc-800/80 px-4 py-2 rounded-lg border border-zinc-700 group-hover:bg-zinc-700 transition-colors">
+                        <span class="text-white text-sm font-medium">Abrir Propuesta</span>
+                    </div>
+                </div>
+            </button>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-32 border-t border-zinc-900 pt-8 flex justify-between items-center text-zinc-600 text-xs font-mono uppercase tracking-widest">
+            <p>2025 AI Avatar Agency</p>
+            <p>Confidential Document</p>
+        </footer>
+
+    </div>
+
+    <!-- MODAL DE CONTENIDO GENERAL -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 modal-hidden bg-black/80 backdrop-blur-xl">
+        <button onclick="closeModal()" class="absolute top-6 right-6 md:top-8 md:right-8 z-[60] p-2 rounded-full bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800 transition-all">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div onclick="closeModal()" class="absolute inset-0 z-40"></div>
+        <div id="modal-content" class="relative z-50 w-full max-w-6xl h-auto max-h-[90vh] overflow-y-auto bg-[#0a0a0a] border border-zinc-800 rounded-2xl shadow-2xl scrollbar-hide">
+            <div id="dynamic-content-area" class="p-8 md:p-12 lg:p-16">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REPRODUCTOR DE VIDEO (NUEVO) -->
+    <div id="video-player-overlay" class="fixed inset-0 z-[100] hidden bg-black flex items-center justify-center p-4 md:p-12 transition-opacity duration-300">
+        <!-- Botón cerrar reproductor -->
+        <button onclick="closeVideoPlayer()" class="absolute top-6 right-6 z-[110] p-4 rounded-full bg-zinc-900/50 text-white hover:bg-zinc-800 backdrop-blur-md transition-all border border-zinc-700">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <!-- Contenedor del video -->
+        <div class="relative w-full max-w-7xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
+             <video id="main-video-player" controls class="w-full h-full object-contain">
+                <source src="" type="video/mp4">
+                Tu navegador no soporta video.
+            </video>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        const SECTIONS = {
+            CONTEXT: `
+                <div class="space-y-8 animate-slide-up">
+                    <div class="border-b border-zinc-800 pb-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                            <span class="text-xs font-mono uppercase tracking-widest text-red-500">Noticia Global</span>
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-medium tracking-tighter text-white mb-6">
+                            "El engagement de la IA supera al contenido real."
+                        </h2>
+                        <p class="text-xl text-zinc-400 font-light leading-relaxed">
+                            Más allá del volumen, la verdadera revolución es el <span class="text-white font-medium">Engagement</span>. Los videos generados con IA están logrando tasas de retención superiores al contenido tradicional grabado, debido a la capacidad de hiper-personalización y optimización algorítmica constante.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                        <div class="bg-zinc-900/30 p-6 rounded-lg border border-zinc-800">
+                            <h4 class="text-white font-medium mb-2">La Nueva Realidad</h4>
+                            <p class="text-zinc-500 text-sm">El ojo humano ya no distingue, y el algoritmo prefiere la consistencia perfecta de la IA frente a la variabilidad humana.</p>
+                        </div>
+                        <div class="bg-zinc-900/30 p-6 rounded-lg border border-zinc-800">
+                            <h4 class="text-emerald-400 font-medium mb-2">Dominio de la Atención</h4>
+                            <p class="text-zinc-500 text-sm">Al eliminar errores y optimizar guiones al milímetro, el contenido sintético retiene al usuario por más tiempo.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            SOLUTION: `
+                <div class="space-y-10 animate-slide-up">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-3xl md:text-5xl font-medium tracking-tight text-white mb-4">Problema & Solución</h2>
+                        <p class="text-zinc-400 text-lg">Modelo "Done-For-You". Sin fricción.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
+                        <div class="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-zinc-800 -translate-x-1/2"></div>
+                        <!-- Problema -->
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono uppercase tracking-widest text-red-500 mb-2 block">El Cuello de Botella</span>
+                            <div class="space-y-4">
+                                <div class="bg-zinc-900/20 p-4 rounded border border-zinc-800/50">
+                                    <strong class="text-zinc-200 block mb-1">Sin Tiempo</strong>
+                                    <p class="text-zinc-500 text-sm">Founders ocupados no pueden grabar 10h a la semana.</p>
+                                </div>
+                                <div class="bg-zinc-900/20 p-4 rounded border border-zinc-800/50">
+                                    <strong class="text-zinc-200 block mb-1">Inconsistencia</strong>
+                                    <p class="text-zinc-500 text-sm">Sin constancia, el algoritmo te castiga y la marca muere.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Solución -->
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono uppercase tracking-widest text-emerald-500 mb-2 block">Nuestra Agencia</span>
+                            <div class="space-y-4">
+                                <div class="bg-emerald-900/10 p-4 rounded border border-emerald-500/20">
+                                    <strong class="text-white block mb-1">Cero Grabación</strong>
+                                    <p class="text-zinc-400 text-sm">Gestionamos todo desde casa. Tu avatar trabaja 24/7.</p>
+                                </div>
+                                <div class="bg-emerald-900/10 p-4 rounded border border-emerald-500/20">
+                                    <strong class="text-white block mb-1">Entrega Mensual</strong>
+                                    <p class="text-zinc-400 text-sm">Estrategia, guiones, generación y publicación. Todo incluido.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            OFFER_A: `
+                <div class="animate-zoom-in">
+                    <span class="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-4 block">Oferta Satélite</span>
+                    <h2 class="text-4xl font-medium text-white mb-6">UGC Virtual</h2>
+                    <p class="text-zinc-400 text-lg mb-8 leading-relaxed">
+                        Red de avatares "modelo" y creadores de contenido sintéticos para saturar nichos específicos y generar prueba social masiva.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
+                            <h4 class="text-white font-medium mb-2">Paquetes UGC</h4>
+                            <div class="text-2xl font-bold text-white mb-1">1.800€ - 3.000€</div>
+                            <span class="text-xs text-zinc-500 block mb-4">Mensual</span>
+                            <ul class="text-sm text-zinc-400 space-y-2">
+                                <li>• 15 a 30 Vídeos generados</li>
+                                <li>• Sin contratar modelos físicos</li>
+                                <li>• Tests A/B de creatividades rápidos</li>
+                                <li>• Reviews y Unboxings AI</li>
+                            </ul>
+                        </div>
+                        <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="video" class="w-10 h-10 text-zinc-600 mx-auto mb-4"></i>
+                                <p class="text-zinc-400 text-sm">Ideal para eCommerce y marcas que necesitan volumen visual.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            OFFER_B: `
+                <div class="animate-slide-up">
+                    <span class="bg-white text-black text-xs font-bold px-3 py-1 rounded mb-6 inline-block uppercase tracking-wider">Golden Offer</span>
+                    
+                    <h2 class="text-4xl md:text-5xl font-medium text-white mb-4">Clon Digital "Done-For-You"</h2>
+                    <p class="text-xl text-zinc-400 mb-10 max-w-2xl">
+                        Gestión integral. Combinamos tu Clon Digital con nuestra red de Influencers UGC para máximo impacto.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Setup -->
+                        <div class="p-8 rounded-2xl bg-zinc-900 border border-zinc-800">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-xs font-mono uppercase tracking-widest text-zinc-500">Fee de Setup</span>
+                                <i data-lucide="settings" class="w-5 h-5 text-zinc-600"></i>
+                            </div>
+                            <div class="text-3xl font-medium text-white mb-2">1.500€</div>
+                            <span class="text-xs text-zinc-500">Pago Único (One-time)</span>
+                            <hr class="border-zinc-800 my-6">
+                            <ul class="space-y-3 text-sm text-zinc-400">
+                                <li class="flex gap-2"><span>•</span> Grabación profesional (30s - 2min)</li>
+                                <li class="flex gap-2"><span>•</span> Clonación de Voz Ultra-Realista</li>
+                                <li class="flex gap-2"><span>•</span> Identidad Visual Completa</li>
+                            </ul>
+                        </div>
+
+                        <!-- Retainer -->
+                        <div class="p-8 rounded-2xl bg-white text-black border border-white relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-black/5 p-4 rounded-bl-2xl">
+                                <i data-lucide="repeat" class="w-6 h-6 text-black"></i>
+                            </div>
+                            <span class="text-xs font-mono uppercase tracking-widest text-zinc-500">Retainer Mensual</span>
+                            <div class="text-3xl font-medium text-black mt-4 mb-2">2.000€</div>
+                            <span class="text-xs text-zinc-500">/ mes (Recurrente)</span>
+                            <hr class="border-zinc-200 my-6">
+                            <ul class="space-y-3 text-sm text-zinc-700 font-medium">
+                                <li class="flex gap-2"><span>✓</span> <strong>8 Vídeos Mensuales</strong></li>
+                                <li class="flex gap-2"><span>✓</span> <strong>Clon + Edición Pro</strong></li>
+                                <li class="flex gap-2"><span>✓</span> Investigación de Guiones & Hooks</li>
+                                <li class="flex gap-2"><span>✓</span> Subtítulos y Publicación</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `,
+            OFFER_C: `
+                <div class="animate-zoom-in">
+                    <span class="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-4 block">High Ticket & Escalabilidad</span>
+                    <h2 class="text-4xl font-medium text-white mb-6">Cursos Digitales & Training</h2>
+                    <p class="text-zinc-400 text-lg mb-8 leading-relaxed">
+                        Convertimos tu conocimiento en un activo digital perpetuo. Transformamos manuales o conocimientos brutos en academias online presentadas por avatares, eliminando la necesidad de grabar actualizaciones.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                         <div class="bg-zinc-900 p-8 rounded-xl border border-zinc-800">
+                            <h4 class="text-white font-medium text-xl mb-4">Lo que construimos</h4>
+                            <ul class="space-y-3 text-sm text-zinc-400">
+                                <li class="flex gap-3"><span class="text-white">•</span> <strong>Infraestructura:</strong> Montaje en Kajabi/Skool/Circle.</li>
+                                <li class="flex gap-3"><span class="text-white">•</span> <strong>Contenido:</strong> Avatares profesores que nunca se cansan.</li>
+                                <li class="flex gap-3"><span class="text-white">•</span> <strong>Soporte:</strong> Materiales automáticos y guías PDF.</li>
+                                <li class="flex gap-3"><span class="text-white">•</span> <strong>Actualización:</strong> Si cambia el temario, la IA re-graba el vídeo en segundos.</li>
+                            </ul>
+                        </div>
+                        <div class="flex flex-col justify-center items-center md:items-start space-y-6 bg-zinc-900/30 p-8 rounded-xl border border-dashed border-zinc-800">
+                            <h4 class="text-white font-medium text-lg">Soluciones Enterprise</h4>
+                            <p class="text-zinc-500 text-sm text-center md:text-left">
+                                Debido a la complejidad y personalización de estos proyectos, cotizamos bajo medida.
+                            </p>
+                            <button class="group flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-full hover:bg-zinc-200 transition-all">
+                                <span>Contactar Ventas</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            ROADMAP: `
+                <div class="space-y-10 animate-slide-up">
+                    <div class="border-b border-zinc-800 pb-6 flex justify-between items-end">
+                        <div>
+                            <h3 class="text-3xl text-white font-medium">Tu Roadmap de 90 Días</h3>
+                            <p class="text-zinc-500 mt-2">Así transformaremos tu marca mes a mes.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Step 1 -->
+                        <div class="bg-zinc-900/40 p-6 rounded-xl border border-zinc-800 relative overflow-hidden group hover:border-zinc-600 transition-colors">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 font-bold text-6xl text-white">01</div>
+                            <h4 class="text-lg text-white font-medium mb-2 relative z-10">Despegue & Identidad</h4>
+                            <p class="text-zinc-500 text-xs mb-4 uppercase tracking-widest">Mes 1</p>
+                            <ul class="space-y-2 text-sm text-zinc-400 relative z-10">
+                                <li class="flex gap-2"><span>•</span> Estudio de tus necesidades.</li>
+                                <li class="flex gap-2"><span>•</span> Creación de tu Avatar IA.</li>
+                                <li class="flex gap-2"><span>•</span> Definición de Voz y Tono.</li>
+                                <li class="flex gap-2"><span>•</span> Lanzamiento en Redes Sociales.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="bg-zinc-900/40 p-6 rounded-xl border border-zinc-800 relative overflow-hidden group hover:border-zinc-600 transition-colors">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 font-bold text-6xl text-white">02</div>
+                            <h4 class="text-lg text-white font-medium mb-2 relative z-10">Tracción</h4>
+                            <p class="text-zinc-500 text-xs mb-4 uppercase tracking-widest">Mes 2</p>
+                            <ul class="space-y-2 text-sm text-zinc-400 relative z-10">
+                                <li class="flex gap-2"><span>•</span> Publicación Constante (Diaria).</li>
+                                <li class="flex gap-2"><span>•</span> Análisis de primeros datos.</li>
+                                <li class="flex gap-2"><span>•</span> Optimización de ganchos (Hooks).</li>
+                                <li class="flex gap-2"><span>•</span> Crecimiento de seguidores.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="bg-zinc-900/40 p-6 rounded-xl border border-zinc-800 relative overflow-hidden group hover:border-zinc-600 transition-colors">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 font-bold text-6xl text-white">03</div>
+                            <h4 class="text-lg text-white font-medium mb-2 relative z-10">Escala & Autoridad</h4>
+                            <p class="text-zinc-500 text-xs mb-4 uppercase tracking-widest">Mes 3</p>
+                            <ul class="space-y-2 text-sm text-zinc-400 relative z-10">
+                                <li class="flex gap-2"><span>•</span> Aumento de volumen de contenido.</li>
+                                <li class="flex gap-2"><span>•</span> Integración de ofertas satélite.</li>
+                                <li class="flex gap-2"><span>•</span> Consolidación de comunidad.</li>
+                                <li class="flex gap-2"><span>•</span> Automatización de leads.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `,
+            DASHBOARD: `
+                <div class="animate-zoom-in space-y-8">
+                     <div class="flex items-center gap-3 mb-6 text-emerald-500">
+                        <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                        <span class="text-xs font-mono uppercase tracking-widest">Optional Add-on</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+                        <div class="flex-1">
+                            <h2 class="text-3xl font-medium text-white mb-4">Tu Dashboard de Cliente</h2>
+                            <p class="text-zinc-400 text-lg mb-6 leading-relaxed">
+                                No solo entregamos videos, entregamos resultados. Accede a tu panel privado para ver el crecimiento de tu marca en tiempo real.
+                            </p>
+                            <ul class="space-y-4">
+                                <li class="flex items-center gap-3">
+                                    <div class="bg-zinc-800 p-2 rounded text-emerald-400"><i data-lucide="pie-chart" class="w-4 h-4"></i></div>
+                                    <span class="text-zinc-300"><strong>Rueda de Rendimiento:</strong> Visualiza tu estado actual vs. inicio.</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="bg-zinc-800 p-2 rounded text-emerald-400"><i data-lucide="trending-up" class="w-4 h-4"></i></div>
+                                    <span class="text-zinc-300"><strong>Seguimiento de Leads:</strong> Trakeo de conversión por vídeo.</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="bg-zinc-800 p-2 rounded text-emerald-400"><i data-lucide="activity" class="w-4 h-4"></i></div>
+                                    <span class="text-zinc-300"><strong>Reportes Vivos:</strong> Métricas de alcance y engagement día a día.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Visual Mockup of Dashboard -->
+                        <div class="flex-1 w-full bg-zinc-900 rounded-xl border border-zinc-800 p-6 relative overflow-hidden">
+                             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-blue-500"></div>
+                             <div class="flex justify-between items-center mb-6">
+                                <span class="text-xs font-mono text-zinc-500">PERFORMANCE WHEEL</span>
+                                <span class="text-emerald-400 text-xs font-bold">+124% Growth</span>
+                             </div>
+                             <!-- Fake Chart Circle -->
+                             <div class="relative w-32 h-32 mx-auto mb-6">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="64" cy="64" r="56" stroke="#27272a" stroke-width="12" fill="none"></circle>
+                                    <circle cx="64" cy="64" r="56" stroke="#10b981" stroke-width="12" fill="none" stroke-dasharray="351" stroke-dashoffset="100"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                    <span class="text-2xl font-bold text-white">8.5</span>
+                                    <span class="text-[10px] text-zinc-500">SCORE</span>
+                                </div>
+                             </div>
+                             <div class="space-y-2">
+                                <div class="h-2 bg-zinc-800 rounded-full w-full overflow-hidden"><div class="h-full bg-blue-500 w-3/4"></div></div>
+                                <div class="flex justify-between text-[10px] text-zinc-500">
+                                    <span>Views Goal</span>
+                                    <span>75%</span>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            COMMUNITY: `
+                <div class="text-center space-y-8 animate-zoom-in py-8">
+                    <div class="inline-flex p-4 rounded-full bg-zinc-900 text-white mb-4">
+                        <i data-lucide="heart" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-4xl text-white font-medium">Comunidad > Contenido</h2>
+                    <p class="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+                        En un océano de contenido sintético, la <span class="text-white font-medium">conexión humana</span> se vuelve el activo más valioso.
+                    </p>
+                    <div class="max-w-xl mx-auto bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 text-left">
+                        <p class="text-zinc-300 text-sm mb-4">
+                            Usamos la IA para automatizar la "atracción" (contenido), liberando al fundador para que se enfoque 100% en la "retención" (comunidad y relaciones reales).
+                        </p>
+                        <p class="text-emerald-400 font-mono text-xs uppercase tracking-widest text-center mt-6">
+                            Automate Content. Scale Relationships.
+                        </p>
+                    </div>
+                </div>
+            `,
+            SAMPLES: `
+                <div class="animate-slide-up space-y-8">
+                     <div class="flex items-center gap-3 mb-6 text-zinc-500">
+                        <i data-lucide="play-circle" class="w-6 h-6"></i>
+                        <span class="text-xs font-mono uppercase tracking-widest">Galería de Pruebas</span>
+                    </div>
+                    
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl font-medium text-white mb-4">Resultados Reales</h2>
+                        <p class="text-zinc-400">Selecciona un video para ver la calidad de nuestros avatares.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        ${Array.from({length: 10}, (_, i) => `
+                            <div onclick="openFullscreenVideo('video${i + 1}.mp4')" class="group relative bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 aspect-[9/16] cursor-pointer hover:border-emerald-500/50 transition-all">
+                                <div class="absolute inset-0 flex items-center justify-center bg-zinc-900/20">
+                                    <video muted class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                        <source src="video${i + 1}.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-transparent transition-all">
+                                         <div class="bg-white/10 backdrop-blur-md p-3 rounded-full group-hover:scale-110 transition-transform shadow-lg border border-white/10">
+                                              <i data-lucide="maximize-2" class="w-6 h-6 text-white"></i>
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
+                                    <span class="text-xs font-mono text-white">Video ${i + 1}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p class="text-center text-xs text-zinc-600 mt-8 font-mono">Archivos requeridos: video1.mp4 ... video10.mp4 en la misma carpeta.</p>
+                </div>
+            `,
+            PROPOSAL: `
+                <div class="animate-slide-up">
+                    <div class="mb-10 text-center">
+                        <h2 class="text-4xl font-medium text-white mb-4">Propuesta Cristina</h2>
+                        <p class="text-zinc-400">Desglose de inversión y alcance del proyecto.</p>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-zinc-800">
+                        <table class="w-full text-sm text-zinc-300 custom-table bg-zinc-900/50">
+                            <thead class="bg-zinc-900 text-xs font-semibold uppercase text-zinc-500">
+                                <tr>
+                                    <th class="w-1/4 py-4 px-6">Concepto / Servicio</th>
+                                    <th class="w-1/5 py-4 px-6 text-center text-white">Pack A</th>
+                                    <th class="w-1/5 py-4 px-6 text-center text-white">Pack B</th>
+                                    <th class="w-1/5 py-4 px-6 text-center text-white">Pack C</th>
+                                    <th class="w-1/6 py-4 px-6 text-center text-zinc-600 border-l border-zinc-800">Costos (Int)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-800">
+                                <tr class="hover:bg-zinc-800/30 transition-colors">
+                                    <td class="px-6 font-medium text-white">Clon de Avatar</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-zinc-600 border-l border-zinc-800">HeyGen 40€</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-800/30 transition-colors">
+                                    <td class="px-6 font-medium text-white">Clon de Voz</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-zinc-600 border-l border-zinc-800">11Labs 100€</td>
+                                </tr>
+                                <tr class="bg-zinc-900/20 hover:bg-zinc-800/30 transition-colors">
+                                    <td class="px-6 font-medium text-white">Volumen de Vídeos</td>
+                                    <td class="text-center font-bold text-white">8 Videos<br><span class="text-xs font-normal text-zinc-500">(2 x semana)</span></td>
+                                    <td class="text-center font-bold text-white">12 Videos<br><span class="text-xs font-normal text-zinc-500">(3 x semana)</span></td>
+                                    <td class="text-center font-bold text-white">16 Videos<br><span class="text-xs font-normal text-zinc-500">(4 x semana)</span></td>
+                                    <td class="text-center text-zinc-600 border-l border-zinc-800">LipDub 250€</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-800/30 transition-colors">
+                                    <td class="px-6">Producción (Guion, Edición, Copy)</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-zinc-600 border-l border-zinc-800">Editor 300€</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-800/30 transition-colors">
+                                    <td class="px-6">Estrategia (Mercado/Competencia)</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-zinc-600 border-l border-zinc-800">Sora 200€</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-800/30 transition-colors">
+                                    <td class="px-6">Dashboard Métricas & Seguimiento</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-emerald-400">✓</td>
+                                    <td class="text-center text-zinc-600 border-l border-zinc-800">Dash 100€</td>
+                                </tr>
+                                <tr class="bg-emerald-900/10 hover:bg-emerald-900/20 transition-colors border-t-2 border-emerald-500/20">
+                                    <td class="px-6 py-6 font-bold text-lg text-white">INVERSIÓN TOTAL</td>
+                                    <td class="px-6 py-6 text-center font-bold text-xl text-white">2.200,00 €</td>
+                                    <td class="px-6 py-6 text-center font-bold text-xl text-emerald-400 transform scale-110">2.900,00 €</td>
+                                    <td class="px-6 py-6 text-center font-bold text-xl text-white">3.400,00 €</td>
+                                    <td class="px-6 py-6 text-center text-xs text-zinc-500 border-l border-zinc-800">
+                                        Total Costes<br><span class="font-mono">1.040 €</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center text-xs text-zinc-500 px-2 font-mono uppercase tracking-widest">
+                        <span>Incluido: Pack 10 Fotos Profesionales</span>
+                        <span>Precios sin IVA</span>
+                    </div>
+                </div>
+            `
+        };
+
+        // --- FUNCIONES JS ---
+        function openModal(sectionId) {
+            const overlay = document.getElementById('modal-overlay');
+            const contentArea = document.getElementById('dynamic-content-area');
+            
+            contentArea.innerHTML = SECTIONS[sectionId];
+            lucide.createIcons();
+            
+            overlay.classList.remove('modal-hidden');
+            overlay.classList.add('modal-visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.remove('modal-visible');
+            overlay.classList.add('modal-hidden');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => { document.getElementById('dynamic-content-area').innerHTML = ''; }, 300);
+        }
+        
+        // --- FUNCIONES REPRODUCTOR DE VIDEO ---
+        function openFullscreenVideo(src) {
+            const playerOverlay = document.getElementById('video-player-overlay');
+            const videoElement = document.getElementById('main-video-player');
+            
+            // Asignar fuente y mostrar
+            videoElement.src = src;
+            playerOverlay.classList.remove('hidden');
+            
+            // Animación de entrada
+            setTimeout(() => {
+                playerOverlay.classList.remove('opacity-0');
+            }, 10);
+            
+            // Reproducir
+            videoElement.play().catch(e => console.log("Autoplay prevent by browser policy", e));
+        }
+
+        function closeVideoPlayer() {
+            const playerOverlay = document.getElementById('video-player-overlay');
+            const videoElement = document.getElementById('main-video-player');
+            
+            // Pausar y limpiar
+            videoElement.pause();
+            playerOverlay.classList.add('hidden');
+            videoElement.src = "";
+        }
+
+        // Cerrar con Escape (ambos modales)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+                closeVideoPlayer();
+            }
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
